@@ -26,7 +26,7 @@ async function checkDatabase() {
 
   try {
     await AppDataSource.initialize();
-    console.log("✓ Connected to database");
+    console.log("Connected to database");
 
     const areaRepo = AppDataSource.getRepository(Area);
     const roomRepo = AppDataSource.getRepository(Room);
@@ -38,8 +38,8 @@ async function checkDatabase() {
     const machines = await machineRepo.find();
     const events = await eventRepo.find();
 
-    console.log("\n📊 Database Contents:");
-    console.log("=" .repeat(50));
+    console.log("\nDatabase contents:");
+    console.log("=".repeat(50));
     console.log(`Areas: ${areas.length}`);
     areas.forEach((area) => {
       console.log(`  - ${area.name} (ID: ${area.areaId})`);
@@ -58,18 +58,17 @@ async function checkDatabase() {
     console.log(`\nEvents: ${events.length}`);
 
     if (areas.length === 0) {
-      console.log("\n⚠️  Database is empty! Run 'npm run seed' to populate it.");
+      console.log("\nDatabase is empty.");
     } else {
-      console.log("\n✅ Database has data!");
+      console.log("\nDatabase has data.");
     }
 
   } catch (error) {
-    console.error("❌ Error connecting to database:", error);
-    if (error instanceof Error) {
-      console.error("Message:", error.message);
-    }
+    console.error("Error connecting to database:", error);
   } finally {
-    await AppDataSource.destroy();
+    if (AppDataSource.isInitialized) {
+      await AppDataSource.destroy();
+    }
   }
 }
 

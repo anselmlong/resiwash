@@ -7,7 +7,6 @@
       "start": "ts-node src/index.ts",
       "dev": "nodemon src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs",
-      "seed": "ts-node src/seed-sample-data.ts",
       "check-db": "ts-node src/check-db.ts"
    },
    "author": "",
