@@ -14,7 +14,7 @@ export const CustomTimeline = ({ events }: { events: MachineEvent[] }) => {
     if (ref.current) {
       ref.current.scrollLeft = ref.current.scrollWidth;
     }
-  }, []);
+  }, [events.length]);
 
   if (!events || events.length === 0) {
     return <div>No events available</div>;
@@ -33,7 +33,6 @@ export const CustomTimeline = ({ events }: { events: MachineEvent[] }) => {
     // up to a max of 3 hours (12 * 25px = 300px)
     const timeDifference = new Date(laterEventTime).getTime() - new Date(event.timestamp).getTime();
     const timeInMinutes = Math.floor(timeDifference / 60000); // Convert to minutes
-    console.log({ timeDifference, timeInMinutes })
     const width = Math.min(150, Math.max(80, timeInMinutes * 1.5)); // Ensure width is between 50px and 300px
 
 
@@ -41,8 +40,9 @@ export const CustomTimeline = ({ events }: { events: MachineEvent[] }) => {
     if (!isSameDay(new Date(laterEventTime), new Date(event.timestamp))) {
       // left width is from laterEventTime to the start of the day of laterEventTime
       // right with is from the start of the day of laterEventTime to the current event, OR just timeDifference minus left time
-      console.log({ laterEventTime, eventTimestamp: event.timestamp });
-      const msSinceStartOfDay = differenceInMilliseconds(laterEventTime, startOfDay(new Date(laterEventTime)));
+       const laterEventDate = new Date(laterEventTime);
+       const msSinceStartOfDay = differenceInMilliseconds(laterEventDate, startOfDay(laterEventDate));
+
       const minutesSinceStartOfDay = Math.floor(msSinceStartOfDay / 60000); // left
 
       const msTillEndOfDay = differenceInMilliseconds(endOfDay(new Date(event.timestamp)), new Date(event.timestamp));
@@ -68,24 +68,25 @@ export const CustomTimeline = ({ events }: { events: MachineEvent[] }) => {
       // const rightWidth = Math.max(0, width - leftWidth);
       // console.log({ leftWidth, rightWidth, width })
     } else {
-      // first event
-      // should add a time label
-      // if > 60m show hours
-      // if > 24h, show days
-      // if > 7 days, show weeks
-      // if > 30 days, show months
-      let label = ''
-      if (timeInMinutes > 60) {
-        label = `${Math.floor(timeInMinutes / 60)}h`;
-      } else if (timeInMinutes > 1440) { // 24 hours
-        label = `${Math.floor(timeInMinutes / 1440)}d`;
-      } else if (timeInMinutes > 10080) { // 7 days
-        label = `${Math.floor(timeInMinutes / 10080)}w`;
-      } else if (timeInMinutes > 43200) { // 30 days
-        label = `${Math.floor(timeInMinutes / 43200)}m`;
-      } else {
-        label = `${timeInMinutes}m`;
-      }
+       // first event
+       // should add a time label
+       // if > 30 days, show months
+       // if > 7 days, show weeks
+       // if > 24h, show days
+       // if > 60m show hours
+       let label = ''
+       if (timeInMinutes > 43200) { // 30 days
+         label = `${Math.floor(timeInMinutes / 43200)}m`;
+       } else if (timeInMinutes > 10080) { // 7 days
+         label = `${Math.floor(timeInMinutes / 10080)}w`;
+       } else if (timeInMinutes > 1440) { // 24 hours
+         label = `${Math.floor(timeInMinutes / 1440)}d`;
+       } else if (timeInMinutes > 60) {
+         label = `${Math.floor(timeInMinutes / 60)}h`;
+       } else {
+         label = `${timeInMinutes}m`;
+       }
+
 
       // todo: if the first event was yesterday, it will not show the time label becuase it will be in the other if-block
 
@@ -105,9 +106,17 @@ export const CustomTimeline = ({ events }: { events: MachineEvent[] }) => {
 
   // add a timelineSeparator at the end, with the label being the last event's startOfDay
   const lastEvent = events[events.length - 1];
-  elements.push(
-    ...[<TimelineConnector event={lastEvent} width={50} />, <TimelineSeparator key={`end`} event={lastEvent} labelTop={format(startOfDay(new Date(lastEvent.timestamp)), 'd MMM')} />]
-  );
+   elements.push(
+     ...[
+       <TimelineConnector key="end-connector" event={lastEvent} width={50} />,
+       <TimelineSeparator
+         key="end"
+         event={lastEvent}
+         labelTop={format(startOfDay(new Date(lastEvent.timestamp)), 'd MMM')}
+       />,
+     ]
+   );
+
 
   return <div style={{ overflowX: 'auto' }} ref={ref}>
     <div className={styles.timelineContainer}>
