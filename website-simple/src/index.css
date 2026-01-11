@@ -10,6 +10,7 @@
   /* Font families */
   --font-sans: 'Work Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
+  --font-brand: 'Outfit', var(--font-sans);
 
   /* Brand accent */
   --color-accent-dark: var(--accent);
@@ -101,3 +102,5 @@ body {
 .text-accent { color: var(--accent); }
 .bg-accent { background-color: var(--accent); }
 .border-accent { border-color: var(--accent); }
+
+.font-brand { font-family: var(--font-brand); }

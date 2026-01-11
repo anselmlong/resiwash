@@ -166,6 +166,7 @@ function RoomCardWrapper({
   return (
     <RoomCard
       areaName={area.name}
+      roomId={roomId}
       roomName={room.name}
       machines={machines}
       onMachineClick={(machineId) => onMachineClick(machineId, machines)}

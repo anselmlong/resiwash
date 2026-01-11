@@ -1,4 +1,5 @@
 import { MachineStatusOverview, MachineStatus, MachineType } from '@/types/datatypes';
+import { getMachineSlotNumber } from '@/utils/helpers';
 import { StatusBadge } from '@/components/machine/StatusBadge';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -28,19 +29,13 @@ export function MachineTypeStatusCard({
   icon,
   className,
 }: MachineTypeStatusCardProps) {
-  // Sort machines by label alphanumerically (W1, W2, W3... or D1, D2, D3...)
+  // Sort machines by W/D slot number when possible.
   const sortedMachines = [...machines].sort((a, b) => {
-    // Extract numeric portion from labels
-    const aMatch = a.label.match(/\d+/);
-    const bMatch = b.label.match(/\d+/);
+    const aNum = getMachineSlotNumber({ label: a.label, type: a.type, name: a.name });
+    const bNum = getMachineSlotNumber({ label: b.label, type: b.type, name: b.name });
 
-    if (aMatch && bMatch) {
-      const aNum = parseInt(aMatch[0], 10);
-      const bNum = parseInt(bMatch[0], 10);
-      return aNum - bNum;
-    }
+    if (aNum !== null && bNum !== null && aNum !== bNum) return aNum - bNum;
 
-    // Fallback to alphabetical sorting
     return a.label.localeCompare(b.label);
   });
 

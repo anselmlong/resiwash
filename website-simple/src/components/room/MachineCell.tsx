@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
 import { MachineStatusOverview } from '@/types/datatypes';
+import { shortMachineLabel } from '@/utils/helpers';
 import { StatusBadge } from '@/components/machine/StatusBadge';
 import { cn } from '@/lib/utils';
 
@@ -19,37 +20,43 @@ interface MachineCellProps {
  * └─────────┘
  */
 export function MachineCell({ machine, onClick, className }: MachineCellProps) {
-  const timeAgo = formatDistanceToNow(new Date(machine.lastUpdated), {
+  const since = machine.lastChangeTime || machine.lastUpdated;
+  const timeAgo = formatDistanceToNow(new Date(since), {
     addSuffix: false,
-  }).replace('about ', '').replace('less than a minute', '<1m').replace(' minutes', 'm').replace(' hours', 'h').replace(' hour', 'h');
+  })
+    .replace('about ', '')
+    .replace('less than a minute', '<1m')
+    .replace(' minutes', 'm')
+    .replace(' minute', 'm')
+    .replace(' hours', 'h')
+    .replace(' hour', 'h');
 
   return (
     <motion.button
       onClick={onClick}
       className={cn(
-        'group relative flex flex-col items-start justify-between',
+        'group relative flex h-[88px] flex-col items-start justify-between overflow-hidden',
         'rounded-md border-2 border-dark-border bg-dark-surface p-3',
         'hover:border-accent-dark hover:bg-dark-border',
         'dark:border-light-border dark:bg-light-surface',
         'dark:hover:border-accent-light dark:hover:bg-light-border',
         'transition-all duration-200',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-dark dark:focus-visible:ring-accent-light',
-        'min-h-[80px]',
         className
       )}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      aria-label={`View details for ${machine.label}`}
+      aria-label={`View details for ${shortMachineLabel(machine.label, machine.type, machine.name)}`}
     >
       {/* Top row: Label + Status Badge */}
-      <div className="flex w-full items-center justify-between">
-        <span className="font-mono text-base font-semibold text-dark-text-primary dark:text-light-text-primary">
-          {machine.label}
+      <div className="flex w-full min-w-0 items-center justify-between gap-2">
+        <span className="min-w-0 truncate font-mono text-base font-semibold text-dark-text-primary dark:text-light-text-primary">
+          {shortMachineLabel(machine.label, machine.type, machine.name)}
         </span>
         <StatusBadge status={machine.currentStatus} size="md" />
       </div>
 
-      {/* Bottom row: Time since update */}
+      {/* Bottom row: Time since status change */}
       <span className="font-mono text-xs text-dark-text-secondary dark:text-light-text-secondary">
         {timeAgo}
       </span>

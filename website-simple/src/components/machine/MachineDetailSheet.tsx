@@ -4,6 +4,7 @@ import { MachineEvent, MachineStatusOverview, convertMachineStatusToString } fro
 import { StatusBadge } from './StatusBadge';
 import { CustomTimeline } from '../timeline/Timeline';
 import { useMachineInfo } from '@/hooks/query/useMachineInfo';
+import { shortMachineLabel } from '@/utils/helpers';
 import {
   Sheet,
   SheetContent,
@@ -65,7 +66,7 @@ export function MachineDetailSheet({ machine, isOpen, onClose }: MachineDetailSh
         <SheetHeader>
           <SheetTitle className="flex items-center gap-3">
             <StatusBadge status={machine.currentStatus} size="lg" />
-            <span className="text-2xl font-bold">{machine.label}</span>
+            <span className="text-2xl font-bold">{shortMachineLabel(machine.label, machine.type, machine.name)}</span>
           </SheetTitle>
           <SheetDescription className="text-left">{locationLine}</SheetDescription>
         </SheetHeader>
