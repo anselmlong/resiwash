@@ -103,7 +103,7 @@ body {
 .bg-accent { background-color: var(--accent); }
 .border-accent { border-color: var(--accent); }
 
-.font-brand { font-family: var(--font-brand); }
+.font-brand { font-family: "Outfit", "Work Sans", system-ui, sans-serif; }
 
 @keyframes resiwashFadeIn {
   from { opacity: 0; }

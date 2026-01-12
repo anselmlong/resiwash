@@ -37,7 +37,7 @@ export function Header({ className }: HeaderProps) {
         {/* Logo */}
         <button
           onClick={() => handleNavigate('/')}
-          className="font-brand text-4xl sm:text-5xl leading-none font-black tracking-tight text-primary hover:text-accent transition-colors"
+          className="font-brand !text-[1.7rem] sm:!text-[2.1rem] !leading-none !font-extrabold tracking-tight text-primary hover:text-accent transition-colors"
         >
           ResiWash
         </button>
