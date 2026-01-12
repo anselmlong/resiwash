@@ -1,4 +1,5 @@
 import { X, Plus } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -54,23 +55,30 @@ export function LocationChips({
           Your Rooms
         </h3>
         <div className="flex flex-wrap gap-2">
-          {savedRoomChips.map((chip) => (
-            <button
-              key={`${chip.areaId}-${chip.roomId}`}
-              className={cn(
-                'inline-flex items-center gap-2 rounded-full border-2 border-dark-border bg-dark-surface px-3 py-1.5',
-                'hover:border-accent-dark transition-colors',
-                'dark:border-light-border dark:bg-light-surface dark:hover:border-accent-light'
-              )}
-              onClick={() => handleRemove(chip.areaId, chip.roomId)}
-            >
-              <span className="text-sm font-medium text-dark-text-primary dark:text-light-text-primary">
-                {chip.label}
-              </span>
-              <X className="h-4 w-4 text-dark-text-secondary dark:text-light-text-secondary" />
-            </button>
-          ))}
-          
+          <AnimatePresence initial={false}>
+            {savedRoomChips.map((chip) => (
+              <motion.button
+                key={`${chip.areaId}-${chip.roomId}`}
+                layout
+                initial={{ opacity: 0, scale: 0.98, y: 6 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98, y: 6 }}
+                transition={{ duration: 0.16, ease: 'easeOut' }}
+                className={cn(
+                  'inline-flex items-center gap-2 rounded-full border-2 border-dark-border bg-dark-surface px-3 py-1.5',
+                  'hover:border-accent-dark transition-colors',
+                  'dark:border-light-border dark:bg-light-surface dark:hover:border-accent-light'
+                )}
+                onClick={() => handleRemove(chip.areaId, chip.roomId)}
+              >
+                <span className="text-sm font-medium text-dark-text-primary dark:text-light-text-primary">
+                  {chip.label}
+                </span>
+                <X className="h-4 w-4 text-dark-text-secondary dark:text-light-text-secondary" />
+              </motion.button>
+            ))}
+          </AnimatePresence>
+
           {/* Add button */}
           <Button
             variant="outline"

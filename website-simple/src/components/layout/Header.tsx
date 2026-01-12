@@ -30,14 +30,14 @@ export function Header({ className }: HeaderProps) {
       )}
       style={{
         borderColor: 'var(--border-color)',
-        backgroundColor: 'rgba(var(--bg-rgb, 10, 10, 10), 0.95)',
+        backgroundColor: 'rgba(var(--bg-rgb, 23, 23, 23), 0.95)',
       }}
     >
       <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         {/* Logo */}
         <button
           onClick={() => handleNavigate('/')}
-          className="font-brand text-3xl font-extrabold tracking-tight text-primary hover:text-accent transition-colors"
+          className="font-brand text-4xl sm:text-5xl leading-none font-black tracking-tight text-primary hover:text-accent transition-colors"
         >
           ResiWash
         </button>

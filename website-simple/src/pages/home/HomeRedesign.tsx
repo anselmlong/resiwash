@@ -7,7 +7,7 @@ import { RoomCard } from '@/components/room/RoomCard';
 import { MachineDetailSheet } from '@/components/machine/MachineDetailSheet';
 import { StatusBadge } from '@/components/machine/StatusBadge';
 import { MachineStatus, MachineStatusOverview } from '@/types/datatypes';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { fadeInUp } from '@/lib/animations';
 
 /**
@@ -59,7 +59,7 @@ export function HomeRedesign() {
       <div className="container mx-auto max-w-6xl px-4 py-6 space-y-6">
         {/* Location selector - sticky */}
         <div className="sticky top-16 z-40 -mx-4 backdrop-blur px-4 py-4 border-b border-app"
-          style={{ backgroundColor: 'rgba(var(--bg-rgb, 10, 10, 10), 0.95)' }}>
+          style={{ backgroundColor: 'rgba(var(--bg-rgb, 23, 23, 23), 0.95)' }}>
           <LocationChips
             savedLocations={savedLocations}
             availableLocations={availableLocations}
@@ -94,18 +94,28 @@ export function HomeRedesign() {
             animate="animate"
             variants={fadeInUp}
           >
-            {savedRooms.map(({ areaId, roomId }, index) => (
-              <RoomCardWrapper
-                key={`${areaId}-${roomId}`}
-                areaId={areaId}
-                roomId={roomId}
-                isPinned={index === 0}
-                onMachineClick={(machineId, machines) => {
-                  const machine = machines.find((m) => m.machineId === machineId);
-                  if (machine) setSelectedMachine(machine);
-                }}
-              />
-            ))}
+            <AnimatePresence initial={false}>
+              {savedRooms.map(({ areaId, roomId }, index) => (
+                <motion.div
+                  key={`${areaId}-${roomId}`}
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                >
+                  <RoomCardWrapper
+                    areaId={areaId}
+                    roomId={roomId}
+                    isPinned={index === 0}
+                    onMachineClick={(machineId, machines) => {
+                      const machine = machines.find((m) => m.machineId === machineId);
+                      if (machine) setSelectedMachine(machine);
+                    }}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </motion.div>
         ) : (
           <motion.div
