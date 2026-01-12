@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
-import { useMemo } from 'react';
-import { MachineEvent, MachineStatusOverview, convertMachineStatusToString } from '@/types/datatypes';
+import { useEffect, useMemo, useState } from 'react';
+import { MachineEvent, MachineStatus, MachineStatusOverview, convertMachineStatusToString } from '@/types/datatypes';
 import { StatusBadge } from './StatusBadge';
 import { CustomTimeline } from '../timeline/Timeline';
 import { useMachineInfo } from '@/hooks/query/useMachineInfo';
@@ -28,32 +28,40 @@ interface MachineDetailSheetProps {
  * - Timeline component (reused from existing)
  */
 export function MachineDetailSheet({ machine, isOpen, onClose }: MachineDetailSheetProps) {
-  if (!machine) return null;
+  const [displayMachine, setDisplayMachine] = useState<MachineStatusOverview | null>(machine);
+
+  useEffect(() => {
+    if (machine) setDisplayMachine(machine);
+  }, [machine]);
 
   const { data: machineDetails, isLoading: isLoadingDetails } = useMachineInfo({
-    roomId: machine.roomId,
-    machineId: machine.machineId,
-    load: isOpen,
+    roomId: displayMachine?.roomId ?? 0,
+    machineId: displayMachine?.machineId ?? 0,
+    load: isOpen && !!displayMachine,
   });
 
-  const statusText = convertMachineStatusToString(machine.currentStatus);
+  const statusText = convertMachineStatusToString(
+    displayMachine?.currentStatus ?? MachineStatus.UNKNOWN
+  );
 
-  const lastChanged = machine.lastChangeTime
-    ? formatDistanceToNow(new Date(machine.lastChangeTime), { addSuffix: true })
+  const lastChanged = displayMachine?.lastChangeTime
+    ? formatDistanceToNow(new Date(displayMachine.lastChangeTime), { addSuffix: true })
     : 'Unknown';
 
-  const areaName = machine.room?.area?.name;
-  const roomName = machine.room?.name;
+  const areaName = displayMachine?.room?.area?.name;
+  const roomName = displayMachine?.room?.name;
   const locationLine = areaName && roomName
     ? `${areaName} - ${roomName}`
-    : roomName || areaName || (machine.roomId ? `Room ${machine.roomId}` : 'Unknown room');
+    : roomName || areaName || (displayMachine?.roomId ? `Room ${displayMachine.roomId}` : 'Unknown room');
 
   const timelineEvents = useMemo(() => {
-    const raw = (machineDetails?.events ?? machine.events ?? []) as MachineEvent[];
+    const raw = (machineDetails?.events ?? displayMachine?.events ?? []) as MachineEvent[];
     return [...raw].sort(
       (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
-  }, [machineDetails?.events, machine.events]);
+  }, [machineDetails?.events, displayMachine?.events]);
+
+  if (!displayMachine) return null;
 
   return (
     <Sheet
@@ -65,8 +73,8 @@ export function MachineDetailSheet({ machine, isOpen, onClose }: MachineDetailSh
       <SheetContent className="max-h-[85vh] overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-3">
-            <StatusBadge status={machine.currentStatus} size="lg" />
-            <span className="text-2xl font-bold">{shortMachineLabel(machine.label, machine.type, machine.name)}</span>
+            <StatusBadge status={displayMachine.currentStatus} size="lg" />
+            <span className="text-2xl font-bold">{shortMachineLabel(displayMachine.label, displayMachine.type, displayMachine.name)}</span>
           </SheetTitle>
           <SheetDescription className="text-left">{locationLine}</SheetDescription>
         </SheetHeader>
@@ -97,7 +105,7 @@ export function MachineDetailSheet({ machine, isOpen, onClose }: MachineDetailSh
                 Machine Type
               </span>
               <span className="text-sm capitalize text-dark-text-primary dark:text-light-text-primary">
-                {machine.type}
+                {displayMachine.type}
               </span>
             </div>
           </div>

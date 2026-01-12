@@ -73,6 +73,30 @@ body {
   color: var(--text-primary);
 }
 
+/* Show pointer cursor for interactive elements */
+a[href],
+area[href],
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+summary,
+label[for],
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 * {
   transition: background-color 200ms ease,
               color 200ms ease,
