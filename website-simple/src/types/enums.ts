@@ -27,4 +27,4 @@ export enum Pages {
 }
 
 export const BASE_URL =
-  import.meta.env.VITE_BASE_URL || "https://resiwash.marcussoh.com/api/v2";
+  import.meta.env.VITE_BASE_URL || "http://localhost:3000/api/v2";
