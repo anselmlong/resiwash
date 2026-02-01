@@ -10,6 +10,7 @@ interface MachineCellProps {
   machine: MachineStatusOverview;
   onClick: () => void;
   className?: string;
+  isStale?: boolean;
 }
 
 /**
@@ -20,7 +21,7 @@ interface MachineCellProps {
  * │ 2m      │  ← Time since update
  * └─────────┘
  */
-export function MachineCell({ machine, onClick, className }: MachineCellProps) {
+export function MachineCell({ machine, onClick, className, isStale = false }: MachineCellProps) {
   const since = machine.lastChangeTime || machine.lastUpdated;
   const timeAgo = formatDistanceToNow(new Date(since), {
     addSuffix: false,
@@ -33,11 +34,13 @@ export function MachineCell({ machine, onClick, className }: MachineCellProps) {
     .replace(' hour', 'h');
 
   const statusDisplay = machine.currentStatus.replace(/_/g, ' ');
-  const tooltipLabel = `${shortMachineLabel(machine.label, machine.type, machine.name)} • ${statusDisplay} • Updated ${timeAgo} ago`;
+  const staleTooltip = isStale
+    ? `⚠️ Data may not be accurate - sensor appears offline`
+    : `${shortMachineLabel(machine.label, machine.type, machine.name)} • ${statusDisplay} • Updated ${timeAgo} ago`;
 
   return (
     <Tooltip
-      label={tooltipLabel}
+      label={staleTooltip}
       multiline
       maw={300}
       withArrow
@@ -53,10 +56,11 @@ export function MachineCell({ machine, onClick, className }: MachineCellProps) {
           'dark:hover:border-accent-light dark:hover:bg-light-border',
           'transition-all duration-200',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-dark dark:focus-visible:ring-accent-light',
+          isStale && 'grayscale opacity-60',
           className
         )}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={!isStale ? { scale: 1.02 } : undefined}
+        whileTap={!isStale ? { scale: 0.98 } : undefined}
         aria-label={`View details for ${shortMachineLabel(machine.label, machine.type, machine.name)}`}
       >
         {/* Top row: Label + Status Badge */}

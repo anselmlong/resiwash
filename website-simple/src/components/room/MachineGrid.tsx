@@ -10,16 +10,10 @@ interface MachineGridProps {
   machines: MachineStatusOverview[];
   onMachineClick: (machineId: number) => void;
   className?: string;
+  isStale?: boolean;
 }
 
-/**
- * MachineGrid component displays a responsive grid of machine cells
- * Layout: CSS Grid
- * - Mobile: 3 columns
- * - Tablet: 4 columns
- * - Desktop: 5 columns
- */
-export function MachineGrid({ machines, onMachineClick, className }: MachineGridProps) {
+export function MachineGrid({ machines, onMachineClick, className, isStale = false }: MachineGridProps) {
   const sortedMachines = useMemo(() => {
     const typeRank = (type: string) => {
       if (type === 'washer') return 0;
@@ -58,6 +52,7 @@ export function MachineGrid({ machines, onMachineClick, className }: MachineGrid
           <MachineCell
             machine={machine}
             onClick={() => onMachineClick(machine.machineId)}
+            isStale={isStale}
           />
         </motion.div>
       ))}
