@@ -81,7 +81,7 @@ To prevent false status changes caused by flickering lights or temporary sensor 
    DB_PASSWORD=your_password
    DB_HOST=localhost
    DB_PORT=5432
-   SESSION_KEY=resiwash-is-awesome
+   SESSION_KEY=RANDOM_STRING
    ```
 
 4. **Configure Firebase authentication:**
