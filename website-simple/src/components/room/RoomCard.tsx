@@ -297,7 +297,32 @@ export function RoomCard({
             </div>
           </div>
         ) : (
-          <MachineGrid machines={machines} onMachineClick={onMachineClick} />
+          <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="font-mono text-xs font-semibold text-secondary">WASHERS</div>
+              <div className="font-mono text-xs font-semibold text-secondary">DRYERS</div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
+                {sortedWashers.map((machine) => (
+                  <MachineCell
+                    key={machine.machineId}
+                    machine={machine}
+                    onClick={() => onMachineClick(machine.machineId)}
+                  />
+                ))}
+              </div>
+              <div className="space-y-2">
+                {sortedDryers.map((machine) => (
+                  <MachineCell
+                    key={machine.machineId}
+                    machine={machine}
+                    onClick={() => onMachineClick(machine.machineId)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Latest status change across machines */}
