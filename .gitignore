@@ -3,3 +3,23 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+
+# Env
+.env
+.env.local
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Misc
+.DS_Store
